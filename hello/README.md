@@ -12,5 +12,6 @@ Progresses
 
 5. [finished tutorial06, static files](https://docs.djangoproject.com/en/1.5/intro/tutorial06/)
 
+6. [finished tutorial05, tests](https://docs.djangoproject.com/en/1.5/intro/tutorial05/)
 
 
