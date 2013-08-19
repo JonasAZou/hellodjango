@@ -10,5 +10,7 @@ Progresses
 
 4. [finished tutorial04, forms](https://docs.djangoproject.com/en/1.5/intro/tutorial04/)
 
+5. [finished tutorial06, static files](https://docs.djangoproject.com/en/1.5/intro/tutorial06/)
+
 
 

@@ -1,11 +1,9 @@
+{% load staticfiles %}
 <!doctype html>
 <html>
     <head>
         <title>{% block title%}polls{% endblock title %}</title>
-        <style type="text/css">
-            label.ln {display: block;}
-            .error {color: red;}
-        </style>
+        <link href="{% static 'polls/style.css' %}" rel="stylesheet" type="text/css" media="screen" />
     </head>
 
     <body>
