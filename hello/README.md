@@ -14,4 +14,4 @@ Progresses
 
 6. [finished tutorial05, tests](https://docs.djangoproject.com/en/1.5/intro/tutorial05/)
 
-
+7. [writing customed commands, undone](https://docs.djangoproject.com/en/dev/howto/custom-management-commands/)
