@@ -19,5 +19,6 @@ urlpatterns = patterns('',
 
     url(r'^favicon.ico$', favicon, name='favicon'),
     #tutorial urls
-    url(r'polls/', include('polls.urls', namespace='polls')),
+    url(r'^polls/', include('polls.urls', namespace='polls')),
+    url(r'passwordsafe/', include('passwordsafe.urls', namespace='passwordsafe')),
 )
