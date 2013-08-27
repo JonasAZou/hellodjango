@@ -1,15 +1,20 @@
-# Create your views here.
+#-*- encoding: utf-8 -*-
+
+from django.contrib.auth import authenticate, login as login_user, logout as logout_user
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.http import HttpResponse
 from pprint import pprint
 import logging
 import hello.settings
-from .forms import RegistryForm
+from .forms import RegistryForm, LoginForm
 
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+
+log = logging.getLogger('debug')
 
 def index(request):
     log = logging.getLogger('debug')
@@ -26,11 +31,11 @@ def index(request):
 def register(request):
     if request.method == 'POST':
         form = RegistryForm(request.POST)
-        loginname = form.cleaned_data['loginname']
-        password = form.cleaned_data['password']
-        repasswd = form.cleaned_data['repasswd']
-        email = form.cleaned_data['email']
         if form.is_valid():
+            loginname = form.cleaned_data['loginname']
+            password = form.cleaned_data['password']
+            email = form.cleaned_data['email']
+            user = User.objects.create_user(loginname, email, password)
             return HttpResponse('thank you, ok!')
     else:
         form = RegistryForm()
@@ -39,7 +44,22 @@ def register(request):
     })
 
 def login(request):
-    pass
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            login_user(request, form.cleaned_data['user'])
+            return HttpResponse('welcome {}'.format(form.cleaned_data['user'].username))
+    else:
+        form = LoginForm()
+    return render(request, 'passwordsafe/login.html', {
+        'form': form,
+    })
 
 def logout(request):
-    pass
+    if request.user.is_authenticated():
+        msg = 'goodbye, {}'.format(request.user.username)
+        log.debug(request.user)
+    else:
+        msg = 'you are not logged in!'
+    logout_user(request)
+    return HttpResponse(msg)
