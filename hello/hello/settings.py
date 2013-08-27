@@ -21,6 +21,16 @@ DATABASES = {
     }
 }
 
+#'''
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': ['127.0.0.1:11211'],
+        'VERSION': '0',
+        'KEY_PREFIX': 'X', 
+    },
+} # '''
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
