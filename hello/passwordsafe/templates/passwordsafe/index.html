@@ -1,0 +1,20 @@
+{% extends 'passwordsafe/base.html' %}
+
+{% block site_content %}
+<h2>hello, {{ user.username }}</h2>
+<table>
+    <thead>
+        <tr><th>site</th><th>login name</th><th>password</th><th>hint</th></tr>
+    </thead>
+    <tbody>
+        {% for pwd in passwords %}
+        <tr>
+            <td>{{ pwd.site }}</td>
+            <td>{{ pwd.loginname }}</td>
+            <td>{{ pwd.password }}</td>
+            <td>{{ pwd.hint }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock site_content %}

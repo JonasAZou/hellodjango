@@ -34,3 +34,18 @@ class LoginForm(forms.Form):
                 raise forms.ValidationError(u'账号已被停用')
         return cleaned_data
 
+class PasswordForm(forms.Form):
+    loginname = forms.CharField(max_length=100, required=False)
+    password = forms.CharField(max_length=100, widget=forms.PasswordInput)
+    site = forms.CharField(max_length=40)
+    hint = forms.CharField(max_length=255, required=False, widget=forms.Textarea)
+
+    def __init__(self, user=None, *args, **kw):
+        super(PasswordForm, self).__init__(*args, **kw)
+        self.user = user
+
+    def clean(self):
+        if not self.user.is_authenticated():
+            raise forms.ValidationError(u'您尚未登录')
+        return self.cleaned_data
+

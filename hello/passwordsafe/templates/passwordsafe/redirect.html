@@ -1,0 +1,21 @@
+{% extends 'passwordsafe/base.html' %}
+
+{% block site_content %}
+<h3>{{ msg }}</h3>
+<script>
+(function() {
+    var url = '{{ url }}', timeout = {{ timeout }};
+    var load = function() {
+        setTimeout(function(){
+            window.location.href=url;
+        }, timeout||3000);
+    };
+    if (window.addEventListener) {
+        window.addEventListener('DOMContentLoaded', load, false);
+    } else {
+        window.attachEvent('onload', load);
+    }
+})(window);
+</script>
+{% endblock site_content %}
+

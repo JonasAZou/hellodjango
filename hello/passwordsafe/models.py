@@ -21,9 +21,9 @@ class Password(models.Model):
     user = models.ForeignKey(User, related_name='key')
     site = models.CharField('site name', max_length=40)
     loginname = models.CharField('login name', max_length=100)
-    passwd = models.CharField('encoded passwod', max_length=100)
+    password = models.CharField('encoded passwod', max_length=100)
     hint   = models.CharField(max_length=255, blank=True)
-    status = models.IntegerField()
+    status = models.IntegerField(default=STATUS_OK)
     add_time = models.DateTimeField(default=now)
     chg_time = models.DateTimeField(default=now)
 
@@ -33,10 +33,14 @@ class Password(models.Model):
 
     @classmethod
     def new(cls, **kwargs):
-        pwd = kwargs.get('passwd', None)
+        pwd = kwargs.get('password', None)
         if not pwd:
-            raise ValueError('passwd required')
+            raise ValueError('password required')
         pwd = cls.make_passwd(pwd)
-        kwargs['passwd'] = pwd
+        kwargs['password'] = pwd
         return cls(**kwargs)
+
+    @classmethod
+    def default_list(cls, user):
+        return cls.objects.filter(user=user, status=cls.STATUS_OK).order_by('-chg_time', 'site')
 

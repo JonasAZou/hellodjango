@@ -1,3 +1,4 @@
+#-*- encoding: utf-8 -*-
 # Django settings for hello project.
 
 DEBUG = True
@@ -156,6 +157,9 @@ LOGGING = {
         'verbose': {
             'format': '%(levelname)s %(name)s %(module)s %(asctime)s %(message)s',
         },
+        'sql_verbose': {
+            'format': '%(levelname)s %(name)s %(module)s %(asctime)s %(params)s %(sql)s %(duration)s',
+        },
     },
     'handlers': {
         'mail_admins': {
@@ -169,6 +173,12 @@ LOGGING = {
             'filename': '/var/tmp/hellodjango.log',
             'formatter': 'verbose',
         },
+        'sql_debug': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/tmp/hellodjango.log',
+            'formatter': 'sql_verbose',
+        },
     },
     'loggers': {
         'django.request': {
@@ -180,6 +190,11 @@ LOGGING = {
             'handlers': ['debug'],
             'level': 'DEBUG',
             'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['sql_debug'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
     }
 }
