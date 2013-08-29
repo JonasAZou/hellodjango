@@ -18,17 +18,17 @@ class Password(models.Model):
         (STATUS_DELETE, u'删除'),
     )
 
-    user = models.ForeignKey(User, related_name='key')
+    user = models.ForeignKey(User, related_name='key', editable=False)
     site = models.CharField('site name', max_length=40)
     loginname = models.CharField('login name', max_length=100)
-    password = models.CharField('encoded passwod', max_length=100)
+    password = models.CharField('passwod', max_length=100)
     hint   = models.CharField(max_length=255, blank=True)
     status = models.IntegerField(default=STATUS_OK)
-    add_time = models.DateTimeField(default=now)
-    chg_time = models.DateTimeField(default=now)
+    add_time = models.DateTimeField(default=now, editable=False)
+    chg_time = models.DateTimeField(default=now, editable=False)
 
     @classmethod
-    def make_passwd(cls, passwd):
+    def make_password(cls, passwd):
         return encrypt(passwd)
 
     @classmethod
@@ -36,7 +36,7 @@ class Password(models.Model):
         pwd = kwargs.get('password', None)
         if not pwd:
             raise ValueError('password required')
-        pwd = cls.make_passwd(pwd)
+        pwd = cls.make_passorwd(pwd)
         kwargs['password'] = pwd
         return cls(**kwargs)
 

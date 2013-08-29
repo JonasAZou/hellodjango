@@ -2,9 +2,9 @@
 
 {% block site_content %}
 <h2>hello, {{ user.username }}</h2>
-<table>
+<table border=1>
     <thead>
-        <tr><th>site</th><th>login name</th><th>password</th><th>hint</th></tr>
+        <tr><th>site</th><th>login name</th><th>password</th><th>hint</th><th>actions</th></tr>
     </thead>
     <tbody>
         {% for pwd in passwords %}
@@ -13,6 +13,7 @@
             <td>{{ pwd.loginname }}</td>
             <td>{{ pwd.password }}</td>
             <td>{{ pwd.hint }}</td>
+            <td><a href="{% url 'passwordsafe:edit' pwd.id %}">Edit</a> <a href="{% url 'passwordsafe:delete' pwd.id %}">Delete</a></td>
         </tr>
         {% endfor %}
     </tbody>

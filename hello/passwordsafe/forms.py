@@ -2,6 +2,7 @@
 
 from django import forms
 from django.contrib.auth import authenticate
+from .models import Password
 
 class RegistryForm(forms.Form):
     loginname = forms.CharField(max_length=50, min_length=6)
@@ -34,18 +35,15 @@ class LoginForm(forms.Form):
                 raise forms.ValidationError(u'账号已被停用')
         return cleaned_data
 
-class PasswordForm(forms.Form):
-    loginname = forms.CharField(max_length=100, required=False)
-    password = forms.CharField(max_length=100, widget=forms.PasswordInput)
-    site = forms.CharField(max_length=40)
-    hint = forms.CharField(max_length=255, required=False, widget=forms.Textarea)
+class PasswordForm(forms.ModelForm):
+    password = forms.CharField(min_length=4, widget=forms.PasswordInput)
 
-    def __init__(self, user=None, *args, **kw):
-        super(PasswordForm, self).__init__(*args, **kw)
-        self.user = user
+    class Meta:
+        model = Password
+        fields = ('loginname', 'password', 'site', 'hint')
+        widgets = {
+            #'password': forms.PasswordInput,
+            'hint': forms.Textarea(attrs={'cols':60, 'rows':10}),
+        }
 
-    def clean(self):
-        if not self.user.is_authenticated():
-            raise forms.ValidationError(u'您尚未登录')
-        return self.cleaned_data
 
