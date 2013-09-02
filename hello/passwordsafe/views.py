@@ -7,14 +7,29 @@ from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.views.generic.base import View, TemplateView
-from django.utils import six
 from django.utils.http import urlquote_plus
 from django.template import RequestContext, loader
+
+import json
 
 from pprint import pprint
 import logging
 from .forms import RegistryForm, LoginForm, PasswordForm
 from .models import *
+
+class JsonResponse(HttpResponse):
+    def __init__(self, data=None, errno=0, errmsg='', *args, **kwargs):
+        super(JsonResponse, self).__init__(*args, **kwargs)
+        if errno or errmsg:
+            ret = {
+                'errno': errno,
+                'errmsg': errmsg,
+            }
+        else:
+            ret = {
+                'data': data
+            }
+        self.write( json.dumps(ret) )
 
 class MyView(View):
     require_auth = False
@@ -39,12 +54,11 @@ class MyView(View):
         return super(MyView, self).dispatch(request, *args, **kwargs)
 
 class IndexView(MyView):
-    require_auth = True
 
     def get(self, request, *args, **kwargs):
-        pwds = Password.default_list(request.user)
+        # pwds = Password.default_list(request.user)
         return render(request, self.template_name, {
-            'passwords': pwds
+            #'passwords': pwds
         })
 
 class RegisterView(MyView):
@@ -66,6 +80,17 @@ class RegisterView(MyView):
                 'form': form,
             })
 
+class CheckNameView(MyView):
+    def get(self, request, username):
+        import re
+        pat = re.compile(r'''[0-9a-zA-Z.-_$]{4,}''')
+        if not pat.match(username):
+            return JsonResponse(errno=100, errmsg=u'用户名不正确')
+        user = User.objects.filter(username=username)
+        if user:
+            return JsonResponse(errno=101, errmsg=u'用户名已存在')
+        return JsonResponse()
+
 class LoginView(MyView):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {
@@ -84,10 +109,10 @@ class LoginView(MyView):
             })
 
 class LogoutView(MyView):
-    def get(request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             logout_user(request)
-            return self.page_redirect(reverser('passwordsafe:login'), u'登出成功')
+            return self.page_redirect(reverse('passwordsafe:login'), u'登出成功')
         else:
             return HttpResponseRedirect(reverse('passwordsafe:login'))
 
@@ -140,4 +165,10 @@ class DeleteView(MyView):
         pwd = get_object_or_404(Password, pk=password_id, user=request.user)
         pwd.delete()
         return self.page_redirect(reverse('passwordsafe:index'), u'删除成功')
+
+class TestView(MyView):
+    require_auth = False
+
+    def get(self, request, tpl):
+        return render(request, 'passwordsafe/{}.html'.format(tpl), {})
 
